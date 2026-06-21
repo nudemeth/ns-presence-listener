@@ -1,0 +1,27 @@
+{
+  "name": "ns-presence-listener",
+  "version": "1.0.0",
+  "description": "Listen to your Nintendo Switch current game and trigger webhooks, Discord Rich Presence, and logs",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "auth": "tsx src/auth/cli.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "discord-rpc": "^4.0.1",
+    "dotenv": "^16.4.0",
+    "nxapi": "^1.6.1-next.254"
+  },
+  "devDependencies": {
+    "@types/discord-rpc": "^4.0.11",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "sharp@0.33.5": true
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.imink.app)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npm install *)",
+      "WebFetch(domain:nxapi-auth.fancy.org.uk)",
+      "WebSearch",
+      "Bash(node --input-type=module)"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "require_version": ["1.6.1"],
+    "log_encryption_key": "E2Sii_7drCzK-68RsEoArmopiAIlZD_6TMA2F_UAAU0",
+    "coral": {
+        "znca_version": "3.4.0"
+    },
+    "coral_auth": {
+        "default": ["nxapi", "https://nxapi-znca-api.fancy.org.uk/api/znca"],
+        "splatnet2statink": null,
+        "flapg": null,
+        "imink": null
+    },
+    "moon": {
+        "znma_version": "1.20.0",
+        "znma_build": "282"
+    }
+}

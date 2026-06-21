@@ -1,0 +1,11 @@
+node_modules/
+
+# Environment — contains secrets
+.env
+
+# Runtime output
+presence.log
+.tokens.json
+
+# Build output
+dist/
