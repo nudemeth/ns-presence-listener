@@ -3,6 +3,11 @@ import type { Client } from "discord-rpc";
 import { config } from "../config";
 import type { PresenceGame } from "../api/presence";
 
+const IMAGE_KEY_MAP: Array<[words: string[], key: string]> = [
+  [["efootball", "kick-off"], "efootball_kick_off"],
+  [["unicorn", "overlord"], "unicorn_overlord"],
+];
+
 let client: Client | null = null;
 let connected = false;
 
@@ -45,11 +50,11 @@ export async function disconnectDiscord(): Promise<void> {
   connected = false;
 }
 
-const IMAGE_KEY_MAP: Array<[words: string[], key: string]> = [
-  [["efootball", "kick-off"], "efootball_kick_off"],
-];
-
 function selectImageKey(gameName: string): string {
   const lower = gameName.toLowerCase();
-  return IMAGE_KEY_MAP.find(([words]) => words.every(w => lower.includes(w)))?.[1] ?? "nintendo_switch_2";
+  return (
+    IMAGE_KEY_MAP.find(([words]) =>
+      words.every((w) => lower.includes(w)),
+    )?.[1] ?? "nintendo_switch_2"
+  );
 }

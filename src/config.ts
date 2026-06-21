@@ -9,6 +9,9 @@ export const config = {
   webhookUrl: optionalEnv('WEBHOOK_URL'),
   webhookSecret: optionalEnv('WEBHOOK_SECRET'),
   discordClientId: optionalEnv('DISCORD_CLIENT_ID'),
+  steamUsername: optionalEnv('STEAM_USERNAME'),
+  steamPassword: optionalEnv('STEAM_PASSWORD'),
+  steamTokenFile: process.env.STEAM_TOKEN_FILE ?? '.steam-refresh-token',
   logFile: process.env.LOG_FILE ?? 'presence.log',
   tokenFile: process.env.TOKEN_FILE ?? '.tokens.json',
 } as const;

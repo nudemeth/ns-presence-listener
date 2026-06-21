@@ -12,6 +12,12 @@ import {
   clearDiscordActivity,
   disconnectDiscord,
 } from "./notifiers/discord";
+import {
+  connectSteam,
+  setSteamActivity,
+  clearSteamActivity,
+  disconnectSteam,
+} from "./notifiers/steam";
 import { config } from "./config";
 
 // Set env vars before any nxapi module is dynamically loaded.
@@ -21,6 +27,16 @@ async function poll(
   previousGame: PresenceGame | null,
 ): Promise<PresenceGame | null> {
   const presence = await fetchPresence();
+  /*const presence: { game: PresenceGame | null } = {
+    game: {
+      name: "Hello Test Presence",
+      imageUri: "",
+      sysDescription: "",
+      totalPlayTime: 0,
+      firstPlayedAt: Math.floor(Date.now() / 1000),
+      lastPlayedAt: Math.floor(Date.now() / 1000),
+    },
+  };*/
   const currentGame = presence.game;
 
   if (currentGame && previousGame && previousGame.name !== currentGame.name) {
@@ -35,6 +51,9 @@ async function poll(
     await setDiscordActivity(currentGame).catch((e) =>
       logError(`Discord RPC: ${e.message}`),
     );
+    await setSteamActivity(currentGame).catch((e) =>
+      logError(`Steam: ${e.message}`),
+    );
   } else if (currentGame && !previousGame) {
     logGameStarted(currentGame);
     await sendWebhook("game_started", currentGame).catch((e) =>
@@ -42,6 +61,9 @@ async function poll(
     );
     await setDiscordActivity(currentGame).catch((e) =>
       logError(`Discord RPC: ${e.message}`),
+    );
+    await setSteamActivity(currentGame).catch((e) =>
+      logError(`Steam: ${e.message}`),
     );
   } else if (!currentGame && previousGame) {
     logGameStopped(previousGame);
@@ -51,6 +73,7 @@ async function poll(
     await clearDiscordActivity().catch((e) =>
       logError(`Discord RPC: ${e.message}`),
     );
+    await clearSteamActivity().catch((e) => logError(`Steam: ${e.message}`));
   }
 
   return currentGame;
@@ -62,6 +85,9 @@ async function main() {
 
   await connectDiscord().catch((err) =>
     logInfo(`Discord RPC skipped (${err.message}) — is Discord running?`),
+  );
+  await connectSteam().catch((err) =>
+    logInfo(`Steam skipped (${err.message})`),
   );
 
   let previousGame: PresenceGame | null = null;
@@ -90,5 +116,6 @@ process.on("SIGINT", async () => {
   await disconnectDiscord().catch((ex) =>
     logError(`Discord RPC: ${ex.message}`),
   );
+  await disconnectSteam().catch((ex) => logError(`Steam: ${ex.message}`));
   process.exit(0);
 });

@@ -1,12 +1,13 @@
 # ns-presence-listener
 
-Polls your Nintendo Switch Online presence and reacts to game start/stop events with webhooks, Discord Rich Presence, and file logging.
+Polls your Nintendo Switch Online presence and reacts to game start/stop events with webhooks, Discord Rich Presence, Steam presence, and file logging.
 
 ## Features
 
 - Detects when you start or stop playing a game on your Nintendo Switch
 - Posts a signed JSON webhook on `game_started` / `game_stopped` events
 - Updates Discord Rich Presence via IPC (requires Discord running)
+- Updates Steam presence to show the current NS game as a non-Steam game
 - Appends timestamped events to a log file
 
 ## Requirements
@@ -14,6 +15,7 @@ Polls your Nintendo Switch Online presence and reacts to game start/stop events 
 - Node.js 20+
 - A Nintendo Switch Online account authenticated via [nxapi](https://github.com/samuelthomas2774/nxapi)
 - (Optional) A Discord application for Rich Presence
+- (Optional) A Steam account for Steam presence
 
 ## Setup
 
@@ -45,8 +47,11 @@ cp .env.example .env
 | `WEBHOOK_URL` | — | URL to POST to on game events (leave blank to disable) |
 | `WEBHOOK_SECRET` | — | HMAC secret for `X-Hub-Signature-256` header (optional) |
 | `DISCORD_CLIENT_ID` | — | Discord application Client ID for Rich Presence (leave blank to disable) |
+| `STEAM_USERNAME` | — | Steam account username (leave blank to disable) |
+| `STEAM_PASSWORD` | — | Steam account password |
+| `STEAM_TOKEN_FILE` | `.steam-refresh-token` | Path to the persisted Steam refresh token |
 | `LOG_FILE` | `presence.log` | Path to the log file |
-| `TOKEN_FILE` | `.tokens.json` | Path to the stored auth token file |
+| `TOKEN_FILE` | `.tokens.json` | Path to the stored Nintendo auth token file |
 
 ### 4. Run
 
@@ -80,6 +85,14 @@ When `WEBHOOK_SECRET` is set, each request includes an `X-Hub-Signature-256` hea
 ## Discord Rich Presence
 
 Set `DISCORD_CLIENT_ID` to the Client ID of a Discord application (create one at [discord.com/developers/applications](https://discord.com/developers/applications)). Discord must be running on the same machine. If it is not running, the listener starts anyway and skips Discord.
+
+## Steam Presence
+
+Set `STEAM_USERNAME` and `STEAM_PASSWORD` to your Steam credentials. When a Nintendo Switch game is detected, it appears on your Steam profile as a non-Steam game.
+
+On first run, Steam Guard will prompt for a verification code in the terminal (email or authenticator app, depending on your account settings). After that, a refresh token is saved to `STEAM_TOKEN_FILE` (`.steam-refresh-token` by default) and used for all subsequent logins — no further prompts needed.
+
+The refresh token file is gitignored and should not be committed.
 
 ## Log format
 

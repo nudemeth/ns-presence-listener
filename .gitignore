@@ -6,6 +6,7 @@ node_modules/
 # Runtime output
 presence.log
 .tokens.json
+.steam-refresh-token
 
 # Build output
 dist/
