@@ -41,17 +41,17 @@ Copy `.env.example` to `.env` and fill in the values you need:
 cp .env.example .env
 ```
 
-| Variable | Default | Description |
-|---|---|---|
-| `POLL_INTERVAL_MS` | `30000` | How often to check presence (ms) |
-| `WEBHOOK_URL` | — | URL to POST to on game events (leave blank to disable) |
-| `WEBHOOK_SECRET` | — | HMAC secret for `X-Hub-Signature-256` header (optional) |
-| `DISCORD_CLIENT_ID` | — | Discord application Client ID for Rich Presence (leave blank to disable) |
-| `STEAM_USERNAME` | — | Steam account username (leave blank to disable) |
-| `STEAM_PASSWORD` | — | Steam account password |
-| `STEAM_TOKEN_FILE` | `.steam-refresh-token` | Path to the persisted Steam refresh token |
-| `LOG_FILE` | `presence.log` | Path to the log file |
-| `TOKEN_FILE` | `.tokens.json` | Path to the stored Nintendo auth token file |
+| Variable            | Default                | Description                                                              |
+| ------------------- | ---------------------- | ------------------------------------------------------------------------ |
+| `POLL_INTERVAL_MS`  | `30000`                | How often to check presence (ms)                                         |
+| `WEBHOOK_URL`       | —                      | URL to POST to on game events (leave blank to disable)                   |
+| `WEBHOOK_SECRET`    | —                      | HMAC secret for `X-Hub-Signature-256` header (optional)                  |
+| `DISCORD_CLIENT_ID` | —                      | Discord application Client ID for Rich Presence (leave blank to disable) |
+| `STEAM_USERNAME`    | —                      | Steam account username (leave blank to disable)                          |
+| `STEAM_PASSWORD`    | —                      | Steam account password                                                   |
+| `STEAM_TOKEN_FILE`  | `.steam-refresh-token` | Path to the persisted Steam refresh token                                |
+| `LOG_FILE`          | `presence.log`         | Path to the log file                                                     |
+| `TOKEN_FILE`        | `.tokens.json`         | Path to the stored Nintendo auth token file                              |
 
 ### 4. Run
 
@@ -106,11 +106,11 @@ Each entry is a pair of `[keyword list, image key]`. If a game's name contains *
 
 Default images are included in the [`assets/`](assets/) folder and must be uploaded to your Discord application before they will appear:
 
-| File | Image key | Used for |
-|---|---|---|
-| `assets/nintendo_switch_2.png` | `nintendo_switch_2` | Fallback for any unrecognised game |
-| `assets/efootball_kick_off.jpg` | `efootball_kick_off` | eFootball Kick-Off |
-| `assets/unicorn_overlord.png` | `unicorn_overlord` | Unicorn Overlord |
+| File                            | Image key            | Used for                           |
+| ------------------------------- | -------------------- | ---------------------------------- |
+| `assets/nintendo_switch_2.png`  | `nintendo_switch_2`  | Fallback for any unrecognised game |
+| `assets/efootball_kick_off.jpg` | `efootball_kick_off` | eFootball Kick-Off                 |
+| `assets/unicorn_overlord.png`   | `unicorn_overlord`   | Unicorn Overlord                   |
 
 To add images for more games, upload the image to Discord and add an entry to `imageKeyMap` in `src/config.ts`.
 
@@ -135,10 +135,24 @@ Events are written to stdout and appended to `LOG_FILE`:
 
 Errors go to stderr with the `ERROR` prefix.
 
+## Maintenance
+
+### Nintendo Switch App version updates
+
+The Nintendo Switch Online API requires the Nintendo Switch App (NSO app) version to be set correctly in request headers. When Nintendo releases a new app version, the API may stop working and `npm run auth` or polling may fail with authentication errors.
+
+To fix this:
+
+1. Check the latest NSO app version number:
+   - **Android/iOS:** [Nintendo's update guide](https://www.nintendo.com/en-gb/Support/Troubleshooting/How-to-Download-or-Update-the-Nintendo-Switch-App-1520024.html)
+   - **And check the nxapi config endpoint:** https://nxapi-znca-api.fancy.org.uk/api/znca/config — the `nsoAppVersion` field contains the version expected by the API.
+
+2. Wait for an nxapi release that picks up the new version automatically.
+
 ## Scripts
 
-| Script | Description |
-|---|---|
-| `npm run dev` | Start the listener |
-| `npm run auth` | Authenticate with Nintendo Switch Online |
-| `npm run typecheck` | Run TypeScript type checking |
+| Script              | Description                              |
+| ------------------- | ---------------------------------------- |
+| `npm run dev`       | Start the listener                       |
+| `npm run auth`      | Authenticate with Nintendo Switch Online |
+| `npm run typecheck` | Run TypeScript type checking             |
