@@ -86,6 +86,34 @@ When `WEBHOOK_SECRET` is set, each request includes an `X-Hub-Signature-256` hea
 
 Set `DISCORD_CLIENT_ID` to the Client ID of a Discord application (create one at [discord.com/developers/applications](https://discord.com/developers/applications)). Discord must be running on the same machine. If it is not running, the listener starts anyway and skips Discord.
 
+### Image keys
+
+Game artwork is shown in Rich Presence using image keys uploaded to your Discord application. To add images:
+
+1. Go to your application in the [Discord Developer Portal](https://discord.com/developers/applications)
+2. Navigate to **Rich Presence → Art Assets** and upload your images, giving each one a key name
+
+The mapping from game names to image keys is defined in `src/config.ts` as `imageKeyMap`:
+
+```ts
+export const imageKeyMap: Array<[words: string[], key: string]> = [
+  [["efootball", "kick-off"], "efootball_kick_off"],
+  [["unicorn", "overlord"], "unicorn_overlord"],
+];
+```
+
+Each entry is a pair of `[keyword list, image key]`. If a game's name contains **all** the listed keywords (case-insensitive), the corresponding image key is used. If no entry matches, the key `nintendo_switch_2` is used as a fallback.
+
+Default images are included in the [`assets/`](assets/) folder and must be uploaded to your Discord application before they will appear:
+
+| File | Image key | Used for |
+|---|---|---|
+| `assets/nintendo_switch_2.png` | `nintendo_switch_2` | Fallback for any unrecognised game |
+| `assets/efootball_kick_off.jpg` | `efootball_kick_off` | eFootball Kick-Off |
+| `assets/unicorn_overlord.png` | `unicorn_overlord` | Unicorn Overlord |
+
+To add images for more games, upload the image to Discord and add an entry to `imageKeyMap` in `src/config.ts`.
+
 ## Steam Presence
 
 Set `STEAM_USERNAME` and `STEAM_PASSWORD` to your Steam credentials. When a Nintendo Switch game is detected, it appears on your Steam profile as a non-Steam game.
