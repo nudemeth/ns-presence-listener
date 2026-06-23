@@ -1,6 +1,7 @@
 import SteamUser from "steam-user";
 import * as readline from "readline";
 import * as fs from "fs";
+import { execFile } from "child_process";
 import { config } from "../config";
 import { logInfo, logError } from "./logger";
 import type { PresenceGame } from "../api/presence";
@@ -9,7 +10,27 @@ let client: SteamUser | null = null;
 let loggedOn = false;
 let keepAlive: ReturnType<typeof setInterval> | null = null;
 
-const KEEP_ALIVE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+const KEEP_ALIVE_INTERVAL_MS = 4 * 60 * 1000; // 4 minutes (under Steam's 5-min idle threshold)
+
+function isSteamClientRunning(): Promise<boolean> {
+  return new Promise((resolve) => {
+    execFile("tasklist", ["/FI", "IMAGENAME eq steam.exe", "/NH"], (err, stdout) => {
+      resolve(!err && stdout.toLowerCase().includes("steam.exe"));
+    });
+  });
+}
+
+function keepOnline(): void {
+  isSteamClientRunning().then((running) => {
+    if (running) {
+      execFile("cmd.exe", ["/c", "start", "", "steam://friends/status/online"], (err) => {
+        if (err) logError(`Steam status URL: ${err.message}`);
+      });
+    } else {
+      client?.setPersona(SteamUser.EPersonaState.Online);
+    }
+  });
+}
 
 function loadRefreshToken(): string | null {
   try {
@@ -39,7 +60,7 @@ export async function connectSteam(): Promise<void> {
       loggedOn = true;
       client!.setPersona(SteamUser.EPersonaState.Online);
       keepAlive = setInterval(() => {
-        client?.setPersona(SteamUser.EPersonaState.Online);
+        keepOnline();
       }, KEEP_ALIVE_INTERVAL_MS);
       logInfo("Steam logged on successfully");
       resolve();
