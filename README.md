@@ -1,11 +1,10 @@
 # ns-presence-listener
 
-Polls your Nintendo Switch Online presence and reacts to game start/stop events with webhooks, Discord Rich Presence, Steam presence, and file logging.
+Polls your Nintendo Switch Online presence and reacts to game start/stop events with Discord Rich Presence, Steam presence, and file logging.
 
 ## Features
 
 - Detects when you start or stop playing a game on your Nintendo Switch
-- Posts a signed JSON webhook on `game_started` / `game_stopped` events
 - Updates Discord Rich Presence via IPC (requires Discord running)
 - Updates Steam presence to show the current NS game as a non-Steam game
 - Appends timestamped events to a log file
@@ -44,8 +43,6 @@ cp .env.example .env
 | Variable            | Default                | Description                                                              |
 | ------------------- | ---------------------- | ------------------------------------------------------------------------ |
 | `POLL_INTERVAL_MS`  | `30000`                | How often to check presence (ms)                                         |
-| `WEBHOOK_URL`       | —                      | URL to POST to on game events (leave blank to disable)                   |
-| `WEBHOOK_SECRET`    | —                      | HMAC secret for `X-Hub-Signature-256` header (optional)                  |
 | `DISCORD_CLIENT_ID` | —                      | Discord application Client ID for Rich Presence (leave blank to disable) |
 | `STEAM_USERNAME`    | —                      | Steam account username (leave blank to disable)                          |
 | `STEAM_PASSWORD`    | —                      | Steam account password                                                   |
@@ -58,29 +55,6 @@ cp .env.example .env
 ```sh
 npm run dev
 ```
-
-## Webhook payload
-
-On each game event the listener POSTs JSON to `WEBHOOK_URL`:
-
-```json
-{
-  "event": "game_started",
-  "timestamp": "2026-06-21T12:00:00.000Z",
-  "game": {
-    "name": "The Legend of Zelda: Breath of the Wild",
-    "imageUri": "...",
-    "sysDescription": "...",
-    "totalPlayTime": 36000,
-    "firstPlayedAt": 1600000000,
-    "lastPlayedAt": 1750000000
-  }
-}
-```
-
-Events: `game_started`, `game_stopped`.
-
-When `WEBHOOK_SECRET` is set, each request includes an `X-Hub-Signature-256` header (`sha256=<hmac-hex>`).
 
 ## Discord Rich Presence
 
