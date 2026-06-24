@@ -11,8 +11,6 @@ export const imageKeyMap: Array<[words: string[], key: string]> = [
 
 export const config = {
   pollIntervalMs: parseInt(process.env.POLL_INTERVAL_MS ?? '30000', 10),
-  webhookUrl: optionalEnv('WEBHOOK_URL'),
-  webhookSecret: optionalEnv('WEBHOOK_SECRET'),
   discordClientId: optionalEnv('DISCORD_CLIENT_ID'),
   steamUsername: optionalEnv('STEAM_USERNAME'),
   steamPassword: optionalEnv('STEAM_PASSWORD'),

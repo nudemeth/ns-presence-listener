@@ -5,7 +5,6 @@ import {
   logInfo,
   logError,
 } from "./notifiers/logger";
-import { sendWebhook } from "./notifiers/webhook";
 import {
   connectDiscord,
   setDiscordActivity,
@@ -41,13 +40,7 @@ async function poll(
 
   if (currentGame && previousGame && previousGame.name !== currentGame.name) {
     logGameStopped(previousGame);
-    await sendWebhook("game_stopped", previousGame).catch((e) =>
-      logError(`Webhook: ${e.message}`),
-    );
     logGameStarted(currentGame);
-    await sendWebhook("game_started", currentGame).catch((e) =>
-      logError(`Webhook: ${e.message}`),
-    );
     await setDiscordActivity(currentGame).catch((e) =>
       logError(`Discord RPC: ${e.message}`),
     );
@@ -56,9 +49,6 @@ async function poll(
     );
   } else if (currentGame && !previousGame) {
     logGameStarted(currentGame);
-    await sendWebhook("game_started", currentGame).catch((e) =>
-      logError(`Webhook: ${e.message}`),
-    );
     await setDiscordActivity(currentGame).catch((e) =>
       logError(`Discord RPC: ${e.message}`),
     );
@@ -67,9 +57,6 @@ async function poll(
     );
   } else if (!currentGame && previousGame) {
     logGameStopped(previousGame);
-    await sendWebhook("game_stopped", previousGame).catch((e) =>
-      logError(`Webhook: ${e.message}`),
-    );
     await clearDiscordActivity().catch((e) =>
       logError(`Discord RPC: ${e.message}`),
     );
